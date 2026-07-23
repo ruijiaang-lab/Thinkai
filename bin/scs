@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# 供应链结算对账工具入口（无需 pip 安装，直接跑源码）
+set -euo pipefail
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+export PYTHONPATH="$DIR/src${PYTHONPATH:+:$PYTHONPATH}"
+exec python3 -m scs "$@"
