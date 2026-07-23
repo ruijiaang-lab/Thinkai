@@ -46,6 +46,10 @@ def cmd_init(args, ws: Workspace) -> int:
     if not existed:
         cfg.save()
     audit.append(ws.audit_file, "init", workspace=str(ws.root))
+    if args.json:
+        _print_json({"ok": True, "workspace": str(ws.root),
+                     "created_config": not existed, **ws.describe()})
+        return 0
     print(f"✓ 工作区已就绪：{ws.root}")
     for k, v in ws.describe().items():
         print(f"  {k}：{v}")
@@ -156,6 +160,9 @@ def cmd_save_mapping(args, ws: Workspace) -> int:
     cfg.set_mapping(mapping)
     cfg.save()
     audit.append(ws.audit_file, "mapping_saved", mapping=mapping)
+    if args.json:
+        _print_json({"ok": True, "mapping": mapping})
+        return 0
     print("✓ 字段映射已保存到 config.json：")
     print(mapping_summary(mapping))
     return 0

@@ -1,0 +1,26 @@
+{
+  "name": "thinkai-ops",
+  "owner": {
+    "name": "Jerry @ ThinkAI",
+    "url": "https://github.com/ruijiaang-lab"
+  },
+  "metadata": {
+    "description": "ThinkAI 运营工具市场",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "supply-chain-settlement",
+      "source": "./",
+      "description": "供应链结算对账：Excel 扫描、UID 比对、重复/已结算判定、结算预览、台账与审计。总控调度两个子技能 + 11 个 MCP 工具。金额绝不经过模型。",
+      "version": "2.0.0",
+      "author": {
+        "name": "Jerry @ ThinkAI",
+        "url": "https://github.com/ruijiaang-lab"
+      },
+      "homepage": "https://github.com/ruijiaang-lab/Thinkai",
+      "category": "operations",
+      "tags": ["结算", "对账", "excel", "mcp", "供应链"]
+    }
+  ]
+}

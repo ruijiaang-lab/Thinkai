@@ -3,18 +3,11 @@
   "version": "2.0.0",
   "description": "供应链日常结算对账插件：Excel 收件箱扫描、UID 比对、重复/已结算判定、结算预览生成、台账与审计。总控技能调度两个子技能（对账分析 / 台账结算），并提供 MCP 工具直连。金额计算全部由确定性程序完成。",
   "author": {
-    "name": "Jerry @ ThinkAI"
+    "name": "Jerry @ ThinkAI",
+    "url": "https://github.com/ruijiaang-lab"
   },
+  "homepage": "https://github.com/ruijiaang-lab/Thinkai",
   "license": "UNLICENSED",
-  "skills": [
-    "skills/supply-chain-settlement",
-    "skills/scs-reconcile",
-    "skills/scs-ledger"
-  ],
-  "mcpServers": {
-    "scs": {
-      "command": "python3",
-      "args": ["mcp/server.py"]
-    }
-  }
+  "category": "operations",
+  "tags": ["结算", "对账", "excel", "mcp", "供应链"]
 }
