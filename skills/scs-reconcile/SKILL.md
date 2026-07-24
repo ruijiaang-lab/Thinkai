@@ -25,7 +25,7 @@ description: 供应链结算对账子技能——对账分析（只读）。扫�
 ## 对账操作细则
 
 1. 先 `scan` 看文件状态（"已处理"= 该文件哈希已结算过，再 apply 会被拒）。
-2. 仅支持 `.xlsx`；遇到 `.xls` → 提醒用户用 Excel/WPS 另存为 .xlsx。
+2. 支持 `.xlsx` 和 `.csv`（UTF-8 / GBK 编码自动识别，平台导出的 CSV 直接放进收件箱即可）；遇到 `.xls` → 提醒用户用 Excel/WPS 另存为 .xlsx。
 3. 字段映射未配置（reconcile 报"还没配置字段映射"）→ `guess_mapping` 看识别结果 → `save_mapping` 保存。表结构变了（换列名）→ 重新识别，不要硬套旧映射。
 4. `reconcile` 执行后产物在 `workspace/output/`：预览 Excel（`结算预览_批次.xlsx`）+ 报告 JSON（`报告_批次.json`）。
 

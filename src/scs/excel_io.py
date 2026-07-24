@@ -5,6 +5,8 @@
 """
 from __future__ import annotations
 
+import csv
+import io
 import unicodedata
 from datetime import date, datetime, time
 from pathlib import Path
@@ -50,11 +52,33 @@ def _header_text(v) -> str:
     return unicodedata.normalize("NFKC", str(v)).strip().lower()
 
 
+def _read_csv_rows(path: Path) -> list:
+    """读取 CSV，返回二维字符串数组。编码自动探测：UTF-8（含 BOM）优先，其次 GBK。
+
+    抖音/微信等平台导出的 CSV 常带 BOM、字段内前导制表符（防科学计数法），
+    这里只做确定性解析，值本身的清洗交给 normalize/parse 环节。
+    """
+    raw = path.read_bytes()
+    text = None
+    for enc in ("utf-8-sig", "gbk"):
+        try:
+            text = raw.decode(enc)
+            break
+        except UnicodeDecodeError:
+            continue
+    if text is None:
+        raise ValueError(f"无法识别 {path.name} 的文本编码（试过 UTF-8 / GBK）。")
+    return list(csv.reader(io.StringIO(text)))
+
+
 def read_rows(path, sheet: Optional[str] = None) -> list:
-    """读取第一个（或指定）工作表，返回二维数组。仅支持 .xlsx。"""
+    """读取第一个（或指定）工作表，返回二维数组。支持 .xlsx 与 .csv。"""
     path = Path(path)
-    if path.suffix.lower() != ".xlsx":
-        raise ValueError(f"暂只支持 .xlsx 格式（收到：{path.name}）。"
+    suffix = path.suffix.lower()
+    if suffix == ".csv":
+        return _read_csv_rows(path)
+    if suffix != ".xlsx":
+        raise ValueError(f"暂只支持 .xlsx / .csv 格式（收到：{path.name}）。"
                          f"如为旧版 .xls，请先用 Excel/WPS 另存为 .xlsx。")
     wb = openpyxl.load_workbook(path, data_only=True, read_only=True)
     try:

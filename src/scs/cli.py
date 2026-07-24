@@ -64,7 +64,7 @@ def cmd_scan(args, ws: Workspace) -> int:
     files = sorted(
         f for f in ws.inbox.iterdir()
         if f.is_file() and not f.name.startswith("~$")
-        and f.suffix.lower() in {".xlsx", ".xls"}
+        and f.suffix.lower() in {".xlsx", ".csv", ".xls"}
     ) if ws.inbox.exists() else []
     ledger = Ledger(ws.ledger_db, readonly=True)
     out = []
@@ -76,7 +76,7 @@ def cmd_scan(args, ws: Workspace) -> int:
             "mtime": datetime.fromtimestamp(f.stat().st_mtime)
                              .strftime("%Y-%m-%d %H:%M"),
         }
-        if f.suffix.lower() == ".xlsx":
+        if f.suffix.lower() in (".xlsx", ".csv"):
             sha = sha256_file(f)
             info["sha256"] = sha
             done = ledger.file_processed(sha)
@@ -106,7 +106,8 @@ def cmd_scan(args, ws: Workspace) -> int:
         mark = "✓" if i["processed"] else "•"
         extra = f"（批次 {i['processed_batch']}）" if i["processed"] else ""
         print(f"  {mark} {i['name']}  {i['size_kb']}KB  {i['mtime']}  [{status}]{extra}")
-    pending = [i for i in out if not i["processed"] and i["format"] == ".xlsx"]
+    pending = [i for i in out
+               if not i["processed"] and i["format"] in (".xlsx", ".csv")]
     if pending:
         print(f"\n待处理 {len(pending)} 个。下一步：scs reconcile <文件>")
     return 0
@@ -187,8 +188,8 @@ def cmd_reconcile(args, ws: Workspace) -> int:
     path = Path(args.file).expanduser().resolve()
     if not path.exists():
         raise ScsError(f"文件不存在：{path}")
-    if path.suffix.lower() != ".xlsx":
-        raise ScsError(f"暂只支持 .xlsx 格式（收到：{path.name}）。"
+    if path.suffix.lower() not in (".xlsx", ".csv"):
+        raise ScsError(f"暂只支持 .xlsx / .csv 格式（收到：{path.name}）。"
                        f"如为旧版 .xls，请先用 Excel/WPS 另存为 .xlsx。")
 
     cfg = Config.load(ws.root)
@@ -402,7 +403,7 @@ def cmd_status(args, ws: Workspace) -> int:
     stats = ledger.stats()
     inbox_files = [f for f in ws.inbox.iterdir()
                    if f.is_file() and not f.name.startswith("~$")
-                   and f.suffix.lower() == ".xlsx"] if ws.inbox.exists() else []
+                   and f.suffix.lower() in (".xlsx", ".csv")] if ws.inbox.exists() else []
     pending = [f for f in inbox_files if not ledger.file_processed(sha256_file(f))]
     ledger.close()
     cfg = Config.load(ws.root)

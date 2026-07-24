@@ -1,6 +1,6 @@
 {
   "name": "supply-chain-settlement",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "供应链日常结算对账插件：Excel 收件箱扫描、UID 比对、重复/已结算判定、结算预览生成、台账与审计。总控技能调度两个子技能（对账分析 / 台账结算），并提供 MCP 工具直连。金额计算全部由确定性程序完成。",
   "author": {
     "name": "Jerry @ ThinkAI",

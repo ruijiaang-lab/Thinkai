@@ -1,4 +1,4 @@
-# Supply Chain Settlement —— 供应链结算对账插件 v2.0
+# Supply Chain Settlement —— 供应链结算对账插件 v2.1
 
 把"每天下载群里的 Excel → 人工比对 UID → 判断谁该结算 → 做结算表"这套流程，变成一句话就能跑的工具：
 
@@ -97,7 +97,7 @@ cp ~/Downloads/今日原始表.xlsx workspace/settlement-inbox/
 
 ## 每天怎么用
 
-1. 把群里下载的 Excel 拖进 `workspace/settlement-inbox/`
+1. 把群里下载的表格拖进 `workspace/settlement-inbox/`（.xlsx 和 .csv 都支持，抖音/微信后台导出的 CSV 直接丢进去，编码自动识别）
 2. `./bin/scs scan` —— 看哪些待处理（处理过的会自动标记，**同一文件绝不会结算两次**）
 3. `./bin/scs reconcile <文件>` —— 生成预览表和报告
 4. 人工检查预览表 → `./bin/scs apply <报告.json> --yes`
@@ -184,7 +184,7 @@ supply-chain-settlement/
 │   ├── audit.py                   # 只追加审计日志
 │   ├── report.py                  # 结算预览 Excel 生成
 │   └── cli.py                     # 命令行（MCP 服务器转发同款处理器）
-├── tests/                         # 52 个测试（pytest，含 MCP 协议端到端）
+├── tests/                         # 57 个测试（pytest，含 MCP 协议端到端 + CSV）
 ├── scripts/make_samples.py        # 生成示例 Excel
 ├── samples/                       # 示例原始表 + 历史台账
 ├── workspace/                     # 运行时工作区（不入库）
@@ -209,14 +209,14 @@ supply-chain-settlement/
 ## 测试
 
 ```bash
-python3 -m pytest tests/ -v      # 52 passed
+python3 -m pytest tests/ -v      # 57 passed
 ```
 
 覆盖：UID 标准化各种脏数据、金额解析与舍入、表头识别、六类分桶判定、容差边界、完整 CLI 流程、**幂等拒绝重复结算**、**MCP 工具函数全链路**、**MCP stdio 协议端到端（真实子进程握手）**、清单与技能结构一致性。
 
 ## 常见问题
 
-- **旧版 .xls 打不开？** 用 Excel/WPS 另存为 .xlsx。
+- **旧版 .xls 打不开？** 用 Excel/WPS 另存为 .xlsx（.csv 无需转换，直接可用）。
 - **表头认不出来？** `save-mapping --mapping '{"uid":"列名","amount":"列名"}'` 手动指定。
 - **同一文件想重跑结算？** `apply <报告> --force`（MCP 为 `force=true`）——慎用，会重复写台账，仅限纠错场景。
 - **MCP 工具没生效？** Codex 检查 `~/.codex/config.toml` 里有没有 `[mcp_servers.scs]`；Claude Code 确认插件已从 marketplace 安装。功能上 MCP 和 CLI 完全等价，一个不行换另一个。

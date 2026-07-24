@@ -39,7 +39,7 @@ description: 供应链结算对账总控。调度两个子技能——对账分�
 
 ## 标准流程（每日对账，由你编排）
 
-1. 用户把群里的 Excel 放进 `workspace/settlement-inbox/`（仅支持 .xlsx；旧 .xls 提醒用户另存）。
+1. 用户把群里的表格放进 `workspace/settlement-inbox/`（支持 .xlsx 和 .csv，抖音/微信等平台导出的 CSV 可直接用；旧 .xls 提醒用户另存）。
 2. **调度 scs-reconcile**：`scan` 列出文件与状态（"已处理"= 该文件哈希已结算过，防重复）。
 3. **调度 scs-reconcile**：`reconcile <文件>` 生成预览，然后**由你向用户汇报**：
    - 待结算 N 笔共 ¥X
